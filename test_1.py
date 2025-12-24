@@ -6,7 +6,8 @@ bus = 0
 device = 0
 spi = spidev.SpiDev()
 spi.open(bus, device)
-spi.max_speed_hz = 100000
+spi.mode= 0b10
+spi.max_speed_hz = 10000
 
 
 def output_freq(hz_value):
@@ -70,6 +71,7 @@ def send_spi_sequence(sequence):
 
 def change_freq(freq_hz):
     # Calc values to send
+    reset = 0x100
     print("For Frequency:", freq_hz)
     freq_reg = output_freq(freq_hz)
     print(f"Frequency setting: {freq_reg} = {freq_reg:#04x} = {freq_reg:016b}")
@@ -85,7 +87,7 @@ def change_freq(freq_hz):
     print(f"Control register write: {ctrl_end:#04x}")
 
     # Write values to spi
-    send_spi_sequence([ctrl_start, lsb_value, msb_value, phase_reg, ctrl_end])
+    send_spi_sequence([reset,ctrl_start, lsb_value, msb_value, phase_reg, ctrl_end])
 
 
 def main():
